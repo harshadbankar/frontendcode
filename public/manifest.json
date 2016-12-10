@@ -1,0 +1,25 @@
+{
+  "name": "ALPHA Energon Web App",
+  "short_name": "Energon",
+  "icons": [
+    {
+      "src": "img/icon175x175.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon175x175.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon175x175.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "gcm_sender_id": "739312235319"
+}
