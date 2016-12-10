@@ -54,3 +54,13 @@ pre code {
     font-size: 36px;
   }
 }
+
+#map {
+	position: inherit !important;
+	height: 100%;
+}
+
+#headMap {
+	height: 50%;
+	width: 50%;
+}

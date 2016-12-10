@@ -1,6 +1,5 @@
 <div id="headMap"><div id="map"></div>
-
- <script>
+<script>
     
     window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;   //compatibility for firefox and chrome
     var pc = new RTCPeerConnection({iceServers:[]}), noop = function(){};      
@@ -32,7 +31,7 @@
             map.setCenter(pos);
            
            $.ajax({
-           url: "https://4319446d.ngrok.io/api/driver/saveDetails",
+           url: "https://08ac06be.ngrok.io/alpha/api/driver/saveDetails",
            data: {
              my_ip: myIP,
              lat : pos.lat,
@@ -42,7 +41,7 @@
                  
            
          $.ajax({
-           url: "https://4319446d.ngrok.io/api/findAll",
+           url: "https://08ac06be.ngrok.io/alpha/api/findAll",
            success: function(others_pos) {
                   for(i=0;i < others_pos.length; ++i){
                       var marker = new google.maps.Marker({
@@ -156,5 +155,5 @@
 
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEJ4eLPCqz-8LDVW8GXWnvuky8ZjxH52M&callback=initMap">
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEJ4eLPCqz-8LDVW8GXWnvuky8ZjxH52M&callback=initMap">
     </script>

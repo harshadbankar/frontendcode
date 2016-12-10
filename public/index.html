@@ -121,5 +121,198 @@
   <script src="scripts/libs/angular-ui-router.min.js"></script>
   <script src="scripts/main.js"></script>
   <script src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+  <script>
+
+    window.onload = function () {
+    	if (localStorage.getItem("myIP") == null || localStorage.getItem("myIP") == undefined || localStorage.getItem("myIP").trim() == ""){
+    		localStorage.setItem("myIP",Math.random());	
+    	}
+    	
+    	window.myIP = localStorage.getItem("myIP");
+    	
+    	
+    }
+	window.all_markers= [];
+      
+   function auto_update(){
+	if (navigator.geolocation) {
+	  navigator.geolocation.getCurrentPosition(function(position) {
+		
+		if (window.all_markers != undefined){
+		  for(i=0; i<window.all_markers.length;++i){
+			  window.all_markers[i].setMap(null);
+		}
+		}
+
+	   window.all_markers = [];
+	
+	   var pos = {
+		  lat: position.coords.latitude,
+		  lng: position.coords.longitude
+		};
+				
+		map.setCenter(pos);
+	   
+	   var marker = new google.maps.Marker({
+		  position: {lat:parseFloat(pos.lat), lng:parseFloat(pos.lng)},
+		  map: map,
+		  icon : 'img/Car_25.gif'
+	  });
+	  
+	  window.all_markers.push(marker);
+	  
+	   $.ajax({
+	   url: "https://08ac06be.ngrok.io/alpha/api/driver/saveDetails",
+	   data: {
+		 my_ip: window.myIP,
+		 lat : pos.lat,
+		 lng : pos.lng
+	   }
+	 });
+			 
+	   
+	 $.ajax({
+	   url: "https://08ac06be.ngrok.io/alpha/api/findAll",
+	   success: function(others_pos) {
+			  for(i=0;i < others_pos.length; ++i){
+			   if (others_pos[i].ipAddress == window.myIP) {
+				  continue;
+				}
+			  
+				  var marker = new google.maps.Marker({
+					  position: {lat:parseFloat(others_pos[i].lat), lng:parseFloat(others_pos[i].lng)},
+					  map: map,
+					  icon : 'img/Car_50.gif'
+					}); 
+				  
+				  window.all_markers.push(marker);
+			  }
+			  var marker = new google.maps.Marker({
+				   position: {lat:parseFloat(pos.lat), lng:parseFloat(pos.lng)},
+				   map: map,
+				   icon : 'img/Car_25.gif'
+			   });
+
+			   window.all_markers.push(marker);
+	   }
+		});
+		
+	  }, function() {
+		handleLocationError(true, infoWindow, map.getCenter());
+	  });
+	}
+  }
+   
+   function initMap() {
+	 window.map = new google.maps.Map(document.getElementById('map'), {
+		   center: {lat: 52.3105419, lng: 4.7660857},
+		   zoom: 11,
+		   mapTypeControlOptions: {
+				mapTypeIds: []
+			  },
+		   mapTypeId: google.maps.MapTypeId.ROADMAP,
+		   styles: [
+					{elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+					{elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+					{elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+					{
+					  featureType: 'administrative.locality',
+					  elementType: 'labels.text.fill',
+					  stylers: [{color: '#d59563'}]
+					},
+					{
+					  featureType: 'poi',
+					  elementType: 'labels.text.fill',
+					  stylers: [{color: '#d59563'}]
+					},
+					{
+					  featureType: 'poi.park',
+					  elementType: 'geometry',
+					  stylers: [{color: '#263c3f'}]
+					},
+					{
+					  featureType: 'poi.park',
+					  elementType: 'labels.text.fill',
+					  stylers: [{color: '#6b9a76'}]
+					},
+					{
+					  featureType: 'road',
+					  elementType: 'geometry',
+					  stylers: [{color: '#38414e'}]
+					},
+					{
+					  featureType: 'road',
+					  elementType: 'geometry.stroke',
+					  stylers: [{color: '#212a37'}]
+					},
+					{
+					  featureType: 'road',
+					  elementType: 'labels.text.fill',
+					  stylers: [{color: '#9ca5b3'}]
+					},
+					{
+					  featureType: 'road.highway',
+					  elementType: 'geometry',
+					  stylers: [{color: '#746855'}]
+					},
+					{
+					  featureType: 'road.highway',
+					  elementType: 'geometry.stroke',
+					  stylers: [{color: '#1f2835'}]
+					},
+					{
+					  featureType: 'road.highway',
+					  elementType: 'labels.text.fill',
+					  stylers: [{color: '#f3d19c'}]
+					},
+					{
+					  featureType: 'transit',
+					  elementType: 'geometry',
+					  stylers: [{color: '#2f3948'}]
+					},
+					{
+					  featureType: 'transit.station',
+					  elementType: 'labels.text.fill',
+					  stylers: [{color: '#d59563'}]
+					},
+					{
+					  featureType: 'water',
+					  elementType: 'geometry',
+					  stylers: [{color: '#17263c'}]
+					},
+					{
+					  featureType: 'water',
+					  elementType: 'labels.text.fill',
+					  stylers: [{color: '#515c6d'}]
+					},
+					{
+					  featureType: 'water',
+					  elementType: 'labels.text.stroke',
+					  stylers: [{color: '#17263c'}]
+					}
+				  ]
+		 });
+		 
+	 $.ajax({
+		   url: "api/station/findAll",
+		   success: function(stations) {
+			   var charge_available = "img/c_green.gif";
+			   var charge_occupied ="img/c_red.gif";
+			   
+				for(i=0;i < stations.length; ++i){
+
+					var marker = new google.maps.Marker({
+						position: {lat:parseFloat(stations[i].lat), lng:parseFloat(stations[i].lng)},
+						map: map,
+						icon :  (stations[i].availability == "available")  ? charge_available : charge_occupied
+					  });	
+				}
+		   }
+		  });
+	 
+	 auto_update();
+	 setInterval(auto_update, 10000);
+   }
+   </script>
 </body>
 </html>

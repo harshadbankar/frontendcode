@@ -38,6 +38,7 @@ transition-timing-function: ease;
 }
 
 #map {
+	position: inherit !important;
 	height: 100%;
 }
 
