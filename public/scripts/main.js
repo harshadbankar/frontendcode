@@ -17,10 +17,15 @@ userData.userEmail = 'bankarharshad91@gmail.com';
 
 app.config(function ($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/currentLocation')
+    $urlRouterProvider.otherwise('/login')
 
     $stateProvider
-      .state('currentLocation', {
+      .state('login', {
+            url: '/login',
+            templateUrl: '../templates/login.html',
+            controller: 'login'
+      })
+	  .state('currentLocation', {
             url: '/currentLocation',
             templateUrl: '../templates/currentLocation.html',
             controller: 'currentLocation'
@@ -40,6 +45,13 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             templateUrl: '../templates/showUserData.html',
             controller: 'showUserData'
       })
+});
+
+app.controller('login', function ($scope, $http, $state) {
+
+// keep here code for login
+
+
 });
 
 app.controller('currentLocation', function ($scope, $http, $state) {
